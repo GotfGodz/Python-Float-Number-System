@@ -1,13 +1,12 @@
 name: Auto commit
 
 on:
-
   push:
     branches:
       - master
       
   schedule:
-  - cron: "1 * * * *" # See https://crontab.guru/#0_7,9,11_*_*_1,3
+    - cron: "1 * * * *" # Adjust as needed
 
 jobs:
   auto_commit:
@@ -15,37 +14,38 @@ jobs:
     steps:
       - name: DEBUG 
         run: echo "::debug::Ref = ${{github.ref}}"
+        
       - uses: actions/checkout@v3      
         with:
-         persist-credentials: false
-         fetch-depth: 0
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Modify last update
         run: |
           d=`date '+%Y-%m-%dT%H:%M:%SZ'`
           echo $d > LAST_UPDATED
-          
-      - name: Commit changes
+
+      - name: Configure Git
         run: |
           git config --local user.email "gotfgodz@gmail.com"
           git config --local user.name "gotf godz"
+      
+      - name: Pull latest changes
+        run: git pull origin master
+
+      - name: Commit changes
+        run: |
           git add -A
           
           arr[0]="feat:file updated"
-          arr[1]="feat:file updated"
-          arr[2]="feat:file updated"
-          arr[3]="feat:file updated"
-          arr[4]="feat:file updated"
-          arr[5]="feat:file updated"
-          arr[6]="feat:file updated"
-          arr[7]="feat:file updated"
-          arr[8]="feat:file updated"
-          arr[9]="feat:file updated"
+          arr[1]="fix:small update"
+          arr[2]="chore:regular update"
+          # Add more messages as needed
           
-          rand=$[$RANDOM % ${#arr[@]}]
+          rand=$((RANDOM % ${#arr[@]}))
           
           git commit -m "${arr[$rand]}"
-          
+
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
         with:
