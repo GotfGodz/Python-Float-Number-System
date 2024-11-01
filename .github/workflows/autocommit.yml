@@ -6,7 +6,7 @@ on:
       - master
       
   schedule:
-    - cron: "1 * * * *" # Adjust as needed
+    - cron: "*/15 * * * *" # Adjust as needed
 
 jobs:
   auto_commit:
